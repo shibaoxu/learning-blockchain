@@ -23,8 +23,13 @@ contract owned{
     address public owner;
     mapping(address => bool) admins;
 
-    modifier onlyOwner{require(msg.sender == owner, ""); _;}
-    modifier onlyAdmin(){require(admins[msg.sender] == true, ""); _;}
+    constructor() internal{
+        owner = msg.sender;
+        admins[msg.sender] = true;
+    }
+    
+    modifier onlyOwner{require(msg.sender == owner, "Only Owner can process"); _;}
+    modifier onlyAdmin(){require(admins[msg.sender] == true, "Only Admin can process."); _;}
     function transferOwnership(address newOwner) public onlyOwner  {owner = newOwner;}
     function isAdmin(address account) public onlyOwner  view returns (bool) {return admins[account];}
     function addAdmin(address account) public onlyOwner  {
@@ -41,7 +46,7 @@ contract Whitelist is owned{
     mapping(address => bool) whitelist;
     
     function addWhitelist(address account) public onlyAdmin{
-        require(account != address(0) && !whitelist[account], "");
+        require(account != address(0) && !whitelist[account], "增加到白名单");
         whitelist[account] = true;
     }
 
